@@ -17,10 +17,10 @@ contract ZombieFactory {
    mapping (uint => address) public zombieToOwner;
    mapping (address => uint) ownerZombiesCount;
 
-   function _createZombie(string memory _name, uint _dna) private {
+   function _createZombie(string memory _name, uint _dna) internal {
       zombies.push(Zombie(_name, _dna));
       uint id = zombies.length - 1;
-      zombieToOwner[id] = msg.sender;
+      zombieToOwner[id] = msg.sender;     //msg.sender refers to the address of whoever calls the function and it's a global variable
       ownerZombiesCount[msg.sender]++;
       emit NewZombie(id, _name, _dna);
    }
@@ -31,6 +31,7 @@ contract ZombieFactory {
    }
 
    function createRandomZombie(string memory _name) public {
+      require(ownerZombiesCount[msg.sender] == 0);
       uint randDna = _generateRandomDna(_name);
       _createZombie(_name, randDna);
    }
